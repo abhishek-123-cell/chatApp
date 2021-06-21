@@ -25,3 +25,18 @@ module.exports = function socketAPIServer(apis) {
     });
   });
 };
+
+module.exports = function displayMessage(Message) {
+  Message.find({})
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .then((messages) => {
+      client.emit("load all messages", messages.reverse());
+    });
+
+  socket.on("load all messages", (data) => {
+    data.forEach((message) => {
+      displayMessage(message);
+    });
+  });
+};
